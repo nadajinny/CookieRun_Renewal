@@ -33,6 +33,51 @@ esc를 누르면 일시정지되고 esc를 다시 누르면 게임이 진행된�
 
 
 
+## 프로젝트 구조
+
+```
+.
+├── src
+│   ├── main
+│   │   ├── Main.java               (실행 진입점, 모드/화면 전환)
+│   │   └── listenAdapter.java      (리스너 어댑터)
+│   ├── Client
+│   │   ├── chatClient.java         (로비/채팅/Ready 처리)
+│   │   ├── MultiClient.java        (2인 3각 클라이언트)
+│   │   └── RelayClient.java        (2:2 이어달리기 클라이언트)
+│   ├── Server
+│   │   ├── chatServer.java         (로비 서버, Ready 동기화)
+│   │   ├── MultiServer.java        (2인 3각 동기화 서버)
+│   │   └── RelayServer.java        (2:2 이어달리기 서버)
+│   ├── panels
+│   │   ├── IntroPanel.java         (인트로 화면)
+│   │   ├── ModeSelectPanel.java    (모드 선택 화면)
+│   │   ├── LoginPanel.java         (로그인 화면)
+│   │   ├── m1SelectPanel.java      (솔로 캐릭터 선택)
+│   │   ├── m1GamePanel.java        (솔로 게임 진행)
+│   │   ├── m1EndPanel.java         (솔로 결과 화면)
+│   │   ├── MultiSelectPanel.java   (2인 3각 캐릭터 선택)
+│   │   ├── MultiGamePanel.java     (2인 3각 게임 진행)
+│   │   ├── MultiEndPanel.java      (2인 3각 결과 화면)
+│   │   ├── RelayIntroPanel.java    (2:2 이어달리기 인트로)
+│   │   ├── RelayGamePanel.java     (2:2 이어달리기 게임)
+│   │   └── RelayEndPanel.java      (2:2 이어달리기 결과)
+│   ├── ingame
+│   │   ├── Cookie.java             (캐릭터 로직)
+│   │   ├── Jelly.java              (젤리 오브젝트)
+│   │   ├── Field.java              (발판)
+│   │   ├── Tacle.java              (장애물)
+│   │   ├── Back.java               (배경 스크롤)
+│   │   ├── MapObjectImg.java       (맵 리소스 묶음)
+│   │   └── CookieImg.java          (캐릭터 이미지 묶음)
+│   └── util
+│       └── Util.java               (렌더링/시간 유틸)
+├── img                              (게임 이미지/버튼/배경)
+├── lib                              (외부 라이브러리, 있을 경우)
+└── bin                              (컴파일 산출물)
+```
+
+
 ## 프레젠테이션
 https://docs.google.com/presentation/d/11-A-YDGr12ncdO9ve9ShfkVe7af7aTftjNtVILobRZU/edit?usp=sharing
 
@@ -97,8 +142,6 @@ https://www.youtube.com/watch?v=ekxUPLb1EjA&feature=youtu.be
 더블버퍼링 : https://ondolroom.tistory.com/292
 
 투명화 구현하기 : https://ondolroom.tistory.com/293
-
-
 
 
 
