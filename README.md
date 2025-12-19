@@ -1,154 +1,197 @@
+# 🍪🏃 **Cookie Run Plus – 멀티플레이로 확장한 협업 러닝 게임**
 
-# 자바 스윙 쿠키런
+**Cookie Run Plus**는  
+기존 **쿠키런 게임의 러닝 메커니즘을 기반으로**,  
+멀티플레이 요소와 협업 모드를 추가하여 확장 개발한 게임입니다.
 
+단순한 개인 플레이를 넘어  
+**여러 명이 함께 참여하고 소통할 수 있는 구조**로 재설계했으며,  
+특히 *2인 3각 모드*를 통해  
+하나의 캐릭터를 두 명의 플레이어가 함께 조작하는 새로운 플레이 경험을 제공합니다.
 
+---
 
+# ✨ 1. 프로젝트 소개
 
-## 기능
+기존 쿠키런은  
+점프와 슬라이드를 혼자서 조작하는 **싱글 플레이 러닝 게임**입니다.
 
-- 체력게이지
-- 점수
-- 점프
-- 더블점프
-- 슬라이드
-- 낙하
-- 일시정지
+이 프로젝트는  
+> “이 조작을 여러 명이 나눠서 수행하면 어떤 재미가 생길까?”
 
-젤리를 먹으면 이펙트가 생기고 점점 사라진다
+라는 질문에서 출발했습니다.
 
-일정 거리를 달리면 체력이 조금씩 줄어든다
+그 결과,
+- 쿠키런의 핵심 조작 방식은 유지하면서
+- 멀티플레이 구조와 협업 요소를 결합한
+- **확장형 러닝 게임**을 목표로 개발했습니다.
 
-물약을 먹으면 체력이 일정량 늘어난다
+---
 
-발판, 공중발판 - 발판이 있으면 떨어지지 않는다
+# 🎮 2. 게임 모드 구성
 
-배경화면이 천천히 흐른다
+본 프로젝트는 기존 쿠키런 시스템 위에  
+아래와 같은 **멀티플레이 모드**를 추가했습니다.
 
-맵이 바뀌면 배경화면이 페이드아웃 페이드인 된다
+## ✔ 2인 3각 모드 (협업 모드)
+- 하나의 쿠키 캐릭터를 두 명이 함께 조작
+- 플레이어 역할 분담
+  - Player 1 : 점프 담당
+  - Player 2 : 슬라이드 담당
+- 협력이 맞지 않으면 즉시 실패하는 구조
 
-장애물에 부딛히면 캐릭터가 반투명해지며 무적상태가 된다
+## ✔ 2:2 이어달리기 모드
+- 두 팀이 각각 점수를 경쟁
+- 서버에서 팀 단위로 클라이언트를 관리
+- 팀 점수 비교 후 결과 출력
 
-esc를 누르면 일시정지되고 esc를 다시 누르면 게임이 진행된다
+---
 
+# 🔐 3. 채팅 및 대기방 시스템
 
+멀티플레이 게임의 특성상  
+게임 시작 전 **대기 및 소통 공간**이 필요했습니다.
 
+### 주요 기능
+- 서버 IP / 포트 기반 접속
+- 닉네임 입력 후 채팅방 입장
+- 채팅방 생성 및 참여
+- 전체 접속자 목록 표시
+- 모든 플레이어 Ready 시 게임 시작
 
-## 프로젝트 구조
+이를 통해  
+멀티 게임에 필요한 **동기화된 시작 조건**을 안정적으로 관리했습니다. :contentReference[oaicite:0]{index=0}
 
+---
+
+# 🧠 4. 서버 중심 멀티플레이 구조
+
+본 프로젝트는 **Java Socket 기반 서버-클라이언트 구조**로 설계되었습니다.
+
+## ✔ 서버 (MultiServer)
+- 클라이언트 연결 관리
+- 게임 모드별 로직 분기
+- 플레이어 역할 자동 분배
+- 입력 메시지 수신 및 검증
+- 게임 상태 및 점수 브로드캐스트
+
+## ✔ 클라이언트 (MultiClient)
+- 사용자 입력 감지
+- 서버로 입력 전달
+- 서버 메시지 수신 후 게임 반영
+- 화면 전환 및 UI 처리
+
+---
+
+# 🎯 5. 입력 동기화 및 역할 분리 (2인 3각 핵심 구현)
+
+2인 3각 모드에서는  
+**모든 조작 입력이 서버를 통해서만 처리**됩니다.
+
+### 입력 처리 흐름
+1. 클라이언트에서 키 입력 발생
+2. 서버로 입력 메시지 전송
+3. 서버에서 플레이어 역할에 맞는 입력만 허용
+4. 필터링된 입력을 전체 클라이언트에 브로드캐스트
+5. 클라이언트에서 캐릭터 동작 수행
+
+### 역할 기반 입력 제어
+- Jump 담당 → 점프 관련 입력만 처리
+- Slide 담당 → 슬라이드 관련 입력만 처리
+- 피격, 낙하, 일시정지 등은 공통 처리
+
+이를 통해  
+**동시 입력 충돌 문제를 구조적으로 해결**했습니다.
+
+---
+
+# 🖥 6. 화면 흐름 및 UI 구조
+
+게임 화면은 `CardLayout`을 사용해  
+하나의 프레임 내에서 관리합니다.
+
+### 화면 구성
+- 모드 선택 화면
+- 캐릭터 선택 화면
+- 게임 플레이 화면
+- 결과(점수) 화면
+
+프레임 재생성 없이  
+자연스러운 게임 흐름을 구현했습니다.
+
+---
+
+# 🏁 7. 게임 종료 및 점수 공유
+
+- 캐릭터 낙하 또는 체력 0 도달 시 게임 종료
+- 클라이언트가 점수를 서버로 전송
+- 서버가 모든 플레이어에게 점수 브로드캐스트
+- 협업 모드는 **공동 점수**, 경쟁 모드는 **팀 점수** 출력
+
+플레이 결과가  
+멀티플레이 구조에 맞게 공유되도록 설계했습니다.
+
+---
+
+# 🛠 8. 기술 스택
+
+### ✔ Language & UI
+- Java
+- Swing
+- CardLayout
+
+### ✔ Network
+- Java Socket
+- TCP 기반 실시간 통신
+
+### ✔ Architecture
+- 기존 쿠키런 구조 분석 후 확장
+- 서버 중심 입력 처리
+- 역할 기반 멀티플레이 설계
+
+---
+
+# 🎯 9. 프로젝트에서의 나의 기여
+
+- 2인 3각 멀티플레이 모드 설계 및 구현
+- 서버 기반 입력 동기화 로직 구현
+- 역할 분담 시스템 및 입력 필터링
+- 멀티 전용 UI 패널 구현
+- 클라이언트–서버 메시지 프로토콜 설계
+
+---
+
+# 🌈 10. 프로젝트 가치
+
+- 기존 싱글 플레이 게임을 **멀티플레이로 확장한 설계 경험**
+- 협업 중심 게임 UX 설계
+- 실시간 네트워크 동기화 구현 경험
+- 객체지향 기반 대규모 구조 설계 경험
+
+---
+
+# 📂 11. 프로젝트 파일 구조 (요약)
+
+상세 구조는 `STRUCTURE.md`에 정리했고, 여기서는 핵심만 요약합니다.
+
+```text
+CookieRun_Renewal/
+|-- README.md - 프로젝트 개요/설명 문서
+|-- STRUCTURE.md - 전체 파일 구조/역할 상세
+|-- CONTRIBUTION.md - 기여 가이드 및 협업 규칙
+|-- 객지프_발표자료_최종.pptx - 최종 발표 자료
+|-- lib/ - 외부 라이브러리
+|-- src/ - Java 소스 (Client, Server, ingame, main, panels, util)
+|-- img/ - 게임 리소스 이미지
+|-- bin/ - 컴파일된 클래스 파일 (빌드 산출물)
 ```
-.
-├── src
-│   ├── main
-│   │   ├── Main.java               (실행 진입점, 모드/화면 전환)
-│   │   └── listenAdapter.java      (리스너 어댑터)
-│   ├── Client
-│   │   ├── chatClient.java         (로비/채팅/Ready 처리)
-│   │   ├── MultiClient.java        (2인 3각 클라이언트)
-│   │   └── RelayClient.java        (2:2 이어달리기 클라이언트)
-│   ├── Server
-│   │   ├── chatServer.java         (로비 서버, Ready 동기화)
-│   │   ├── MultiServer.java        (2인 3각 동기화 서버)
-│   │   └── RelayServer.java        (2:2 이어달리기 서버)
-│   ├── panels
-│   │   ├── IntroPanel.java         (인트로 화면)
-│   │   ├── ModeSelectPanel.java    (모드 선택 화면)
-│   │   ├── LoginPanel.java         (로그인 화면)
-│   │   ├── m1SelectPanel.java      (솔로 캐릭터 선택)
-│   │   ├── m1GamePanel.java        (솔로 게임 진행)
-│   │   ├── m1EndPanel.java         (솔로 결과 화면)
-│   │   ├── MultiSelectPanel.java   (2인 3각 캐릭터 선택)
-│   │   ├── MultiGamePanel.java     (2인 3각 게임 진행)
-│   │   ├── MultiEndPanel.java      (2인 3각 결과 화면)
-│   │   ├── RelayIntroPanel.java    (2:2 이어달리기 인트로)
-│   │   ├── RelayGamePanel.java     (2:2 이어달리기 게임)
-│   │   └── RelayEndPanel.java      (2:2 이어달리기 결과)
-│   ├── ingame
-│   │   ├── Cookie.java             (캐릭터 로직)
-│   │   ├── Jelly.java              (젤리 오브젝트)
-│   │   ├── Field.java              (발판)
-│   │   ├── Tacle.java              (장애물)
-│   │   ├── Back.java               (배경 스크롤)
-│   │   ├── MapObjectImg.java       (맵 리소스 묶음)
-│   │   └── CookieImg.java          (캐릭터 이미지 묶음)
-│   └── util
-│       └── Util.java               (렌더링/시간 유틸)
-├── img                              (게임 이미지/버튼/배경)
-├── lib                              (외부 라이브러리, 있을 경우)
-└── bin                              (컴파일 산출물)
-```
 
+---
 
-## 프레젠테이션
-https://docs.google.com/presentation/d/11-A-YDGr12ncdO9ve9ShfkVe7af7aTftjNtVILobRZU/edit?usp=sharing
+# 📌 요약
 
-
-
-
-## 영상
-https://www.youtube.com/watch?v=ekxUPLb1EjA&feature=youtu.be
-
-
-
-
-## 설명 블로그
-
-1.준비 : https://ondolroom.tistory.com/297 
-
-2.전역공간 : https://ondolroom.tistory.com/298 
-
-3.JPanel생성자 : https://ondolroom.tistory.com/299 
-
-4.mapMove메서드 : https://ondolroom.tistory.com/300 
-
-5.hit메서드 : https://ondolroom.tistory.com/301 
-
-6.fall메서드 : https://ondolroom.tistory.com/302 
-
-7.jump메서드 : https://ondolroom.tistory.com/303 
-
-8.paintComponent 및 결과 : https://ondolroom.tistory.com/304
-
-
-
-
-## 기능별 연구 블로그
-
-프로그램을 함수화 하기 : https://ondolroom.tistory.com/265
-
-클릭으로 이미지 변경하기 : https://ondolroom.tistory.com/280
-
-쓰레드를 이용하여 repaint 무한반복하기 : https://ondolroom.tistory.com/281
-
-배경화면이 흐르도록 만들기 : https://ondolroom.tistory.com/284
-
-배경화면이 무한반복 하도록 만들기 : https://ondolroom.tistory.com/285
-
-이미지 2개가 만나면 하나 없어지도록 하기 : https://ondolroom.tistory.com/286
-
-이미지 점프 + 낙하 하게 만들기 : https://ondolroom.tistory.com/287
-
-더블점프 구현하기 : https://ondolroom.tistory.com/288
-
-발판 구현하기 : https://ondolroom.tistory.com/289
-
-다중발판 구현하기 : https://ondolroom.tistory.com/294
-
-이미지로 발판 및 젤리 구현하기 : https://ondolroom.tistory.com/296
-
-동작마다 이미지 변경하기 : https://ondolroom.tistory.com/290
-
-페이드 아웃 페이드 인 구현하기 : https://ondolroom.tistory.com/291
-
-더블버퍼링 : https://ondolroom.tistory.com/292
-
-투명화 구현하기 : https://ondolroom.tistory.com/293
-
-
-
-
-
-
-
-
-
-
+- **프로젝트명:** Cookie Run Plus (객체지향프로그래밍 팀 프로젝트)
+- **기반 게임:** 쿠키런
+- **확장 요소:** 멀티플레이, 협업 모드, 서버 기반 동기화
+- **핵심 기술:** Java, Socket, Swing
+- **주요 경험:** 기존 게임 구조 분석 → 멀티 구조 확장
